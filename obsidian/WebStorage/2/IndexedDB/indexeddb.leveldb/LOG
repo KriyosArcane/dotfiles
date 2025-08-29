@@ -1,0 +1,14 @@
+2025/06/10-07:02:27.402 2048 Reusing MANIFEST /home/kriyos/.config/obsidian/WebStorage/2/IndexedDB/indexeddb.leveldb/MANIFEST-000001
+2025/06/10-07:02:27.402 2048 Recovering log #6
+2025/06/10-07:02:27.403 2048 Reusing old log /home/kriyos/.config/obsidian/WebStorage/2/IndexedDB/indexeddb.leveldb/000006.log 
+2025/06/10-07:02:27.493 2049 Level-0 table #11: started
+2025/06/10-07:02:27.499 2049 Level-0 table #11: 60706 bytes OK
+2025/06/10-07:02:27.504 2049 Delete type=0 #6
+2025/06/10-07:02:27.505 1fce Manual compaction at level-0 from '\x00\x04\x00\x00\x00' @ 72057594037927935 : 1 .. '\x00\x05\x00\x00\x00' @ 0 : 0; will stop at (end)
+2025/06/10-07:02:27.505 1fce Manual compaction at level-1 from '\x00\x04\x00\x00\x00' @ 72057594037927935 : 1 .. '\x00\x05\x00\x00\x00' @ 0 : 0; will stop at '\x00\x04\x01\x1f\x04\x03\x01\x03\x00N\x00E\x00W\x03\x00\x00\x00\x00\x00\x00L@\x03\x00\x10\x8b\xaa22yB\x00\x03\x00\x00\x00\x00\x00\x00&@' @ 612 : 1
+2025/06/10-07:02:27.505 1fce Compacting 1@1 + 1@2 files
+2025/06/10-07:02:27.508 1fce Generated table #12@1: 21 keys, 740 bytes
+2025/06/10-07:02:27.508 1fce Compacted 1@1 + 1@2 files => 740 bytes
+2025/06/10-07:02:27.511 1fce compacted to: files[ 0 0 1 0 0 0 0 ]
+2025/06/10-07:02:27.511 1fce Delete type=2 #11
+2025/06/10-07:02:27.512 1fce Manual compaction at level-1 from '\x00\x04\x01\x1f\x04\x03\x01\x03\x00N\x00E\x00W\x03\x00\x00\x00\x00\x00\x00L@\x03\x00\x10\x8b\xaa22yB\x00\x03\x00\x00\x00\x00\x00\x00&@' @ 612 : 1 .. '\x00\x05\x00\x00\x00' @ 0 : 0; will stop at (end)

